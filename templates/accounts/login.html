@@ -1,0 +1,105 @@
+{% load static %}
+
+<!-- Combined Modal for Login and Sign Up -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content container" id="container">
+      <div class="form-container sign-up-container">
+        <form action="#" id="SignUp">
+          <h1>Create Account</h1>
+          <div class="row mt-5">
+            <div class="fw-bolder fst-italic fs-6 statusMsg"></div>
+          </div>
+          <div class="row ">
+            <div class="col-6">
+              <div class="infield">
+                <input type="text" name="first_name" maxlength="150" id="id_first_name" placeholder="First Name" />
+                <label></label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="infield">
+                <input type="text" name="last_name" maxlength="150" id="id_last_name" placeholder="Last Name" />
+                <label></label>
+              </div>
+            </div>
+          </div>
+          <div class="infield">
+            <input type="text" name="username" maxlength="150" autofocus="" required="" placeholder="User Name"
+              id="id_username">
+            <label></label>
+          </div>
+          <div class="infield">
+            <input type="email" name="email" maxlength="254" id="id_email" placeholder="Email">
+            <label></label>
+          </div>
+          <div class="infield">
+            <input type="password" name="password1" autocomplete="new-password" required=""
+              placeholder="Please Enter the password" id="id_password1" />
+            <label></label>
+          </div>
+          <div class="infield">
+            <input type="password" name="password2" autocomplete="new-password" required=""
+              placeholder="Please Re-enter the password" id="id_password2" />
+            <label></label>
+          </div>
+          <button type="submit">Sign Up</button>
+        </form>
+      </div>
+      <div class="form-container sign-in-container">
+        <form action="#" method="POST" id="LogIn">
+          <h1>Login</h1>
+          <div class="row mt-5">
+            <div class="fw-bolder fst-italic fs-6 statusMsg"></div>
+          </div>
+          <div class="infield mt-5">
+            <input type="text" placeholder="User Name" name="username" />
+            <label></label>
+          </div>
+          <div class="infield">
+            <input type="password" placeholder="Password" name="password" />
+            <label></label>
+          </div>
+          <a href="#" class="forgot">Forgot your password?</a>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+      <div class="overlay-container" id="overlayCon">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1>Welcome Back!</h1>
+            <p>
+              To keep connected with us please login with your personal info
+            </p>
+            <button>Sign In</button>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <h1>Hello, Friend!</h1>
+            <p>Enter your personal details and start journey with us</p>
+            <button id="signUpBtn">Sign Up</button>
+          </div>
+        </div>
+        <button id="overlayBtn"></button>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  #authModal .overlay {
+    background-image: url({% static "accounts/images/chat_bot_login.png" %});
+  }
+</style>
+<script>
+  const container = document.getElementById("container");
+  const overlayCon = document.getElementById("overlayCon");
+  const overlayBtn = document.getElementById("overlayBtn");
+
+  overlayBtn.addEventListener("click", () => {
+    container.classList.toggle("right-panel-active");
+
+    overlayBtn.classList.remove("btnScaled");
+    window.requestAnimationFrame(() => {
+      overlayBtn.classList.add("btnScaled");
+    });
+  });
+</script>

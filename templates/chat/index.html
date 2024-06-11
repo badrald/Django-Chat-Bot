@@ -1,0 +1,154 @@
+{% extends "../base.html" %} {% load static %} {% block content %}
+
+<div class="wrapper">
+  <div class="conversation-area">
+    <div class="msg online">
+      <img class="msg-profile" src="{% static 'chat/imges/unknown.png' %}" alt="" />
+      <div class="msg-detail">
+        <div class="msg-username">Badr Alden</div>
+        <div class="msg-content">
+          <span class="msg-message">software Enginner ...</span>
+        </div>
+      </div>
+    </div>
+    <hr />
+    {% for group in chat_groups %}
+    <div class="msg" data-group-slug="{{ group.slug }}">
+      <img class="msg-profile" src="{% static 'chat/imges/chat.png' %}" alt="" />
+      <div class="msg-detail">
+        <div class="msg-username">{{ group.name }}</div>
+        <div class="msg-content">
+          <span class="msg-message">{{ group.created_at }}</span>
+        </div>
+      </div>
+    </div>
+    <hr />
+    {% endfor %}
+
+    <button class="add"></button>
+
+    <div class="overlay"></div>
+  </div>
+  <div class="chat-area-overlay"></div>
+  <div class="chat-area scrollable">
+    <div class="chat-area-header">
+      <div class="chat-area-title"></div>
+      <div class="chat-area-group"></div>
+    </div>
+    <div class="chat-area-main">
+      <div class="chat-msg">
+        <div class="chat-msg-profile">
+          <img class="chat-msg-img" id="ChatBotPic" src="{% static 'chat/imges/chatbot.png' %}" alt="" />
+          <div class="chat-msg-date">Message seen 1.22pm</div>
+        </div>
+        <div class="chat-msg-content">
+          <div class="chat-msg-text">
+            {% comment "" %} The response will take this place {% endcomment %}
+            Hi , I am AI chat bot how can I help you today
+          </div>
+        </div>
+      </div>
+    </div>
+    <form action="" method="POST" id="inputForm">
+      <div class="chat-area-footer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round" class="feather feather-video">
+          <path d="M23 7l-7 5 7 5V7z" />
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round" class="feather feather-image">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <path d="M21 15l-5-5L5 21" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 8v8M8 12h8" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip">
+          <path
+            d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
+        </svg>
+        {% csrf_token %}
+        <input type="text" placeholder="Type something here..." />
+        <button type="submit" class="btn send">
+          <img src="{% static 'chat/imges/send.png' %} " alt="" srcset="" />
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %} {% block scripts %}
+<script src="{% static 'chat/js/chating.js' %}">
+</script>
+<script>
+  let default_pic = "{% static 'chat/imges/chatbot.png' %}"
+  let user_pic = "{{user.profile.user_photo.url}}";
+  $(document).ready(function () {
+    function loadMessages(groupSlug) {
+      $.ajax({
+        type: "GET",
+        url: `${groupSlug}/messages`, // Assuming the URL format is correct
+        success: function (data) {
+          $(".chat-area-main").empty(); // Clear the chat area
+
+          if (data.messages && data.messages.length > 0) {
+            // Process messages if available
+            data.messages.forEach(function (item) {
+
+              const messageHtml = `
+              <div class="chat-msg owner">
+                <div class="chat-msg-profile">
+                  <img class="chat-msg-img" src="${user_pic}" alt="" />  
+                  <div class="chat-msg-date">${item.created_at}</div>
+                </div>
+                <div class="chat-msg-content">
+                  <div class="chat-msg-text">
+                    ${item.message}
+                  </div>
+                </div>
+              </div>
+              <div class="chat-msg">
+                <div class="chat-msg-profile">
+                  <img class="chat-msg-img" src="${default_pic}" alt="" />  
+                  <div class="chat-msg-date">${item.created_at}</div>
+                </div>
+                <div class="chat-msg-content">
+                  <div class="chat-msg-text">
+                    ${item.response}
+                  </div>
+                </div>
+              </div>`;
+              $(".chat-area-main").append(messageHtml);
+            });
+          } else {
+            // Handle no messages scenario (optional: display a message)
+            console.log("No messages found for this group.");
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("Error fetching messages:", error);
+          // Consider displaying an error message to the user
+        },
+      });
+    }
+
+    // // Load messages for the initially selected group (if any)
+    // const initialGroupSlug = /* logic to get the initial group slug */;
+    // if (initialGroupSlug) {
+    //   loadMessages(initialGroupSlug);
+    // }
+
+    // Load messages when a chat group is clicked
+    $(".msg").on("click", function () {
+      const groupId = $(this).data("group-slug");
+      console.log(groupId);
+      loadMessages(groupId);
+    });
+  });
+</script>
+{% endblock scripts %}

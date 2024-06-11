@@ -1,0 +1,61 @@
+{% load static %}
+
+<div
+  class="modal fade"
+  id="profileModal"
+  tabindex="-1"
+  aria-labelledby="profileModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileModalLabel">User Profile</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <hr class="mt-0 mb-4" />
+          <div class="row">
+            <div class="col-xl-4">
+              <div class="card mb-4 mb-xl-0">
+                <div class="card-header text-bold">Profile Picture</div>
+                <div class="card-body text-center">
+                  <img
+                    class="img-account-profile rounded-circle mb-3 h-100 w-100"
+                    src="{% if user.profile.user_photo %}{{user.profile.user_photo.url}}{% else %}{% static 'home/default_imges/user-defualt.png' %}{% endif %}"
+                    alt="" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">User name</h6>
+                    </div>
+                    <div class="col-sm-9 text-bold">{{user.username}}</div>
+                  </div>
+                  <hr />
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Full Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-bold">
+                      {{user.first_name}} {{user.last_name}}
+                    </div>
+                  </div>
+                  <hr />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
